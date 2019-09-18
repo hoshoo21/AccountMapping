@@ -1,0 +1,340 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.1.0/css/responsive.bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.css" />
+
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/responsive.bootstrap.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
+    
+<style>
+        .input-group .form-control.form-control-selectpicker {
+        padding: 0;
+    }
+    .input-group .form-control.form-control-selectpicker > .btn-group.bootstrap-select {
+        width: 100%;
+    }
+    .input-group .form-control-6 {
+        width: 50%;
+    }    
+    .input-group .form-control.form-control-selectpicker .btn-group .btn {
+        border: 0;
+    }
+    .input-group .form-control.form-control-selectpicker .btn-group.open .btn {
+        border-radius: 0;
+    }
+
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <form>
+                <div class="form-group">
+                    <label for="dllticker">Ticker</label> <br/>
+                    <select id="dllticker" style="width:150px" class="js-example-basic-single">
+                        
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ddlvalues">Values</label> <br />
+                    <select id="ddlvalues" style="width:150px"  class="js-example-basic-single">
+                        <option value="0" selected="selected">Show All</option>
+                        <option value="1" >Mapped</option>
+                        <option value="2">Null</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ddlyear">Year</label> <br />
+                    <select id="ddlyear" style="width:150px" class="js-example-basic-single">
+                        
+                    </select>
+                </div>
+                <button  id="btnsearch" class="btn btn-primary">search</button>
+            </form>
+        </div>
+        <div class="row">
+               <table id="tblmappedvalue">
+                   <thead>
+                       <tr>
+                           <th>Ticker</th>
+                           <th>RPTCode</th>
+                           <th>AC Shot</th>
+                           <th>Account Code</th>
+                           <th>Year</th>
+                           <th>General Code</th>
+                           <th></th>
+                       </tr>
+                   </thead>
+
+               </table>
+
+           
+        </div>
+    </div>
+    <script src="plugins/jQuery/jQuery-2.2.0.min.js"></script>
+    <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />    
+    <script src="plugins/select2.min.js"></script>
+    
+    <script type="text/javascript">
+        $(function () {
+            $('#ddlvalues').select2();
+            getAccountCode();
+            getYear();
+            GetSymbol();
+            $('#btnsearch').on('click', function (evt) {
+                evt.preventDefault();
+        
+                getMappedValues();
+            });
+
+        });
+
+        function getMappedValues() {
+            var ajax_data = {
+                Ticker: $('#dllticker').val(),
+                Year: $('#ddlyear').val(),
+                MappingType: $('#ddlvalues').val()
+            };
+
+            $.ajax({
+                url: "api/AccountCode/GetMappedValues",
+                data: ajax_data,
+                type: 'GET',
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+                        data[i].id = i;
+                    }
+
+                    //tblRawData
+                    if ($.fn.dataTable.isDataTable('#tblmappedvalue')) {
+                        audittabvar = $('#tblmappedvalue').DataTable().clear().destroy();
+                    }
+
+                    $('#tblmappedvalue').dataTable({
+                        data: data,
+                        "columns": [
+                            { "data": "TICKER" },
+                            { "data": "RPTCODE" },
+                            { "data": "ACSHORT" },
+                            { "data": "ACCOUNTCODE" },
+                            { "data": "YEAR" },
+                            {
+                                "data": "GENERALCODE",
+                                "render": function (d, t, r) {
+                                    console.log(r);
+                                    var $select = $("<select></select>", {
+                                        "id": r.id + "start",
+                                        "value": d
+                                    });
+                                    $.each(accountcode, function (k, v) {
+                                        var $option = $("<option></option>", {
+                                            "text": v,
+                                            "value": v
+                                        });
+                                        if (d === v) {
+                                            $option.attr("selected", "selected")
+                                        }
+                                        $select.append($option);
+                                    });
+                                    return $select.prop("outerHTML");
+                                }
+                            },
+                            {
+                                "render": function (data, type, full, meta) {
+                                    var coldata = '';
+
+                                    if (full['GENERALCODE'] == null) {
+                                        coldata = ' <a  class="btn btn-success btn-xs holdcomment" onclick="save(\'' + full["ACCOUNTCODE"] + '\',\'' + full["YEAR"] + '\',\'' + full['id'] + 'start\')" data-th ="' + full["GIH_DOC_REF_NO"] + '" href="#" >' + 'Save Account' + '</a> <br>';
+                                    }
+
+                                    else {
+                                        coldata = ' <a  class="btn btn-success btn-xs holdcomment" onclick="update(\'' + full["ACCOUNTCODE"] + '\',\'' + full["YEAR"] + '\',\'' + full['id'] + 'start\')" data-th ="' + full["GIH_DOC_REF_NO"] + '" href="#" >' + 'Update Account' + '</a> <br>';
+                                    }
+
+                                    return coldata;
+
+
+
+
+
+
+
+                                }
+
+                            }
+
+                        ]
+                    })
+
+                },
+                error: function (request) {
+                    console.log('failure');
+                    //notifyError('Saving User Detail failed!');
+
+                }
+            });
+
+        }
+
+        function save(accountcode, year, ddlid) {
+            var generalcode = $('#' + ddlid).val();
+            
+            var ajax_data = {
+                AccountCode: accountcode,
+                GeneralCode : generalcode,
+                Year : year
+
+            };
+            var _self = this;
+            $.ajax({
+                url: "api/AccountCode/InsertMappedCode/",
+                data: ajax_data,
+                type: 'POST',
+                dataType: 'json',
+                data: ajax_data,
+                success: function (data) {
+                    getMappedValues();
+                },
+                error: function (request) {
+
+                }
+            });
+        
+    
+
+        }
+
+        function update(accountcode, year, ddlid) {
+            var generalcode = $('#' + ddlid).val();
+
+            var ajax_data = {
+                AccountCode: accountcode,
+                GeneralCode: generalcode,
+                Year: year
+
+            };
+            var _self = this;
+            $.ajax({
+                url: "api/AccountCode/UpdateMappedCode/",
+                data: ajax_data,
+                type: 'POST',
+                dataType: 'json',
+                data: ajax_data,
+                success: function (data) {
+
+                },
+                error: function (request) {
+
+                }
+            });
+
+
+
+        }
+        function getYear() {
+
+            $.ajax({
+                url: "api/AccountCode/GetYear",
+                type: 'GET',
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log(data);
+                    var samplearr = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = {};
+                        obj.id = data[i].YEAR;
+                        if (i==0) {
+                            obj.text = 'Show All';
+                        }
+                        else {
+                            obj.text = data[i].YEAR;
+                        }
+                        samplearr.push(obj)
+                    }
+                    $('#ddlyear').select2({ data: samplearr });
+
+                },
+                error: function (request) {
+                    console.log('failure');
+                    //notifyError('Saving User Detail failed!');
+
+                }
+            });
+        }
+
+        function GetSymbol() {
+
+            $.ajax({
+                url: "api/AccountCode/GetSymbol",
+                type: 'GET',
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log(data);
+                    var samplearr = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = {};
+                        obj.id = data[i].COMPANY_NAME;
+                        obj.text = data[i].COMPANY_SYMBOL;
+                        samplearr.push(obj)
+                    }
+                    $('#dllticker').select2({ data: samplearr });
+
+                },
+                error: function (request) {
+                    console.log('failure');
+                    //notifyError('Saving User Detail failed!');
+
+                }
+            });
+        }
+        var accountcode = [];
+
+        function getAccountCode() {
+            $.ajax({
+                url: "api/AccountCode/GetGeneralCode",
+                type: 'GET',
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log(data);
+                    for (var i=0; i<data.length; i++){
+                        accountcode.push(data[i].GENERALCODE);
+
+                    }
+                    accountcode.unshift("not mapped");
+                },
+                error: function (request) {
+                    console.log('failure');
+                    //notifyError('Saving User Detail failed!');
+
+                }
+            });
+
+
+        }
+    </script>
+</body>
+</html>

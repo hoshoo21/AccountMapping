@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.1.0/css/responsive.bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/sl-1.2.5/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.css" />
+
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/responsive.bootstrap.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
+
+</head>
+<body>
+    <form id="fileinfo" enctype="multipart/form-data" method="post" name="fileinfo">
+        <input type="file" name="file" id="fileinput" required />
+    </form>
+    <input type="button" value="upload file!" id="uploadBTN"></input>
+    <div id="output"></div>
+    <table id="tblRawData" class="table table-striped table-bordered nowrap" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Ticker</th>
+                <th>RPT CODE</th>
+                <th>ACS Short</th>
+                <th>Account Code</th>
+                <th>Year</th>
+                <th>Amount</th>
+                
+
+            </tr>
+        </thead>
+    </table>
+    
+
+
+    <script src="plugins/jQuery/jQuery-2.2.0.min.js"></script>
+    <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            getRawData('DGKC', 2016)
+            $('#uploadBTN').on('click', function () {
+                var input = document.getElementById('fileinput');
+                var file = input.files[0];
+                var data = new FormData();
+                data.append("UploadedFile", file);
+
+                $.ajax({
+                    url: "api/Document/UploadDocuments",
+                    contentType: false,
+                    processData: false,
+                    type: 'POST',
+                    data: data,
+                    success: function (data) {
+                        $('#output').html(data);
+                        var parts = data.split("|")
+                        getRawData(parts[0], parts[1])
+                    },
+                    cache: false,
+                    processData: false
+                });
+            });
+        });
+        function getRawData(ticker, year) {
+            var ajax_data = {
+                Ticker: ticker,
+                Year : year
+
+            };
+
+            $.ajax({
+                url: "api/Document/GetRawData",
+                data: ajax_data,
+                type: 'GET',
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log(data);
+                    //tblRawData
+                    $('#tblRawData').dataTable({
+                        data: data,
+                        "columns": [
+                            { "data": "TICKER" },
+                            { "data": "RPTCODE" },
+                            { "data": "AMOUNT" },
+                            { "data": "ACCOUNTCODE" },
+                            { "data": "YEAR" },
+                            { "data": "AMOUNT" }
+                            
+                        ]
+                    })
+
+                },
+                error: function (request) {
+                    console.log('failure');
+                    //notifyError('Saving User Detail failed!');
+
+                }
+            });
+
+        }
+        
+    
+    </script>
+</body>
+</html>
