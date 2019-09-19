@@ -48,7 +48,7 @@ namespace Accounts
                             connExcel.Open();
                             DataTable dtExcelSchema;
                             dtExcelSchema = connExcel.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-                            string sheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                            string sheetName = "Upload$";
                             connExcel.Close();
 
                             //Read Data from First Sheet.
