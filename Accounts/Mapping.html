@@ -21,8 +21,9 @@
     <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/responsive/2.1.0/js/responsive.bootstrap.min.js"></script>
     <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
-    
-<style>
+    <script type="text/javascript" src="loadingpluinh/loading.js"></script>
+    <link type="text/css" rel="stylesheet" href="loadingpluinh/loading.css" />
+    <style>
         .input-group .form-control.form-control-selectpicker {
         padding: 0;
     }
@@ -38,13 +39,38 @@
     .input-group .form-control.form-control-selectpicker .btn-group.open .btn {
         border-radius: 0;
     }
+           .modal {
+            display:    none;
+            position:   fixed;
+            z-index:    1000;
+            top:        0;
+            left:       0;
+            height:     100%;
+            width:      100%;
+            background: rgba( 255, 255, 255, .8 ) 
+                        url('http://i.stack.imgur.com/FhHRx.gif') 
+                        50% 50% 
+                        no-repeat;
+        }
 
+        /* When the body has the loading class, we turn
+           the scrollbar off with overflow:hidden */
+        body.loading .modal {
+            overflow: hidden;   
+        }
+
+        /* Anytime the body has the loading class, our
+           modal element will be visible */
+        body.loading .modal {
+            display: block;
+        }
 </style>
 </head>
 <body>
-
+    
     <div class="container">
-        <div class="row">
+        
+            <div class="row">
             <form>
                 <div class="form-group">
                     <label for="dllticker">Ticker</label> <br/>
@@ -87,7 +113,9 @@
 
            
         </div>
+
     </div>
+    <div class="modal"><!-- Place at bottom of page --></div>
     <script src="plugins/jQuery/jQuery-2.2.0.min.js"></script>
     <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />    
@@ -95,6 +123,12 @@
     
     <script type="text/javascript">
         $(function () {
+            $body = $("body");
+
+            $(document).on({
+                ajaxStart: function () { $body.addClass("loading"); },
+                ajaxStop: function () { $body.removeClass("loading"); }
+            });
             $('#ddlvalues').select2();
             getAccountCode();
             getYear();
@@ -133,6 +167,10 @@
 
                     $('#tblmappedvalue').dataTable({
                         data: data,
+                        columnDefs: [
+                                { targets: 5, type: 'html' },
+                                { targets: [5], searchable: false }
+                        ],
                         "columns": [
                             { "data": "TICKER" },
                             { "data": "RPTCODE" },
@@ -140,10 +178,10 @@
                             { "data": "ACCOUNTCODE" },
                             { "data": "YEAR" },
                             {
+                                "width": "15%",
                                 "data": "GENERALCODE",
                                 "render": function (d, t, r) {
-                                    console.log(r);
-                                    var $select = $("<select></select>", {
+                                    var $select = $("<select class='dt-select2' id='"+ r.id + "start' style='width:100%;max-width:90%;'> </select>", {
                                         "id": r.id + "start",
                                         "value": d
                                     });
@@ -184,8 +222,12 @@
 
                             }
 
-                        ]
+                        ],
+                        drawCallback: function () {
+                            $('.dt-select2').select2();
+                        }
                     })
+                    $('#overlay1').hide();
 
                 },
                 error: function (request) {

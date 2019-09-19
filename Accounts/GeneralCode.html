@@ -25,10 +25,36 @@
         margin-right:0px !important;
     
     }
+    .modal {
+            display:    none;
+            position:   fixed;
+            z-index:    1000;
+            top:        0;
+            left:       0;
+            height:     100%;
+            width:      100%;
+            background: rgba( 255, 255, 255, .8 ) 
+                        url('http://i.stack.imgur.com/FhHRx.gif') 
+                        50% 50% 
+                        no-repeat;
+        }
 
+        /* When the body has the loading class, we turn
+           the scrollbar off with overflow:hidden */
+        body.loading .modal {
+            overflow: hidden;   
+        }
+
+        /* Anytime the body has the loading class, our
+           modal element will be visible */
+        body.loading .modal {
+            display: block;
+        }
+    
 </style>
 </head>
 <body>
+    
     <form class="text-center border border-light p-5" action="#!">
 
             <div class="col-md-3">
@@ -60,12 +86,19 @@
         </div>
 
     </div>
-
+    <div class="modal"><!-- Place at bottom of page --></div>
 
     <script src="plugins/jQuery/jQuery-2.2.0.min.js"></script>
     <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript">
         $(function () {
+            $body = $("body");
+
+            $(document).on({
+                ajaxStart: function () { $body.addClass("loading"); },
+                ajaxStop: function () { $body.removeClass("loading"); }
+            });
+
             getGeneralCode();
             $('#inserAccountCode').on('click', function (evt) {
                 evt.preventDefault();
@@ -91,7 +124,7 @@
             
         });
         function getGeneralCode() {
-            
+    
             $.ajax({
                 url: "api/AccountCode/GetGeneralCode",
                 type: 'GET',
@@ -110,7 +143,7 @@
                             
                         ]
                     })
-
+    
                 },
                 error: function (request) {
                     console.log('failure');

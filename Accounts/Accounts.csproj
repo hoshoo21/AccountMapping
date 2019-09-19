@@ -118,9 +118,12 @@
     <Content Include="css\style.css" />
     <Content Include="FileUpload.html" />
     <Content Include="GeneralCode.html" />
+    <Content Include="images\ajax-loader.gif" />
     <Content Include="Index.html" />
     <Content Include="js\Fileupload.js" />
     <Content Include="js\multitabs.js" />
+    <Content Include="loadingpluinh\loading.css" />
+    <Content Include="loadingpluinh\loading.js" />
     <Content Include="Mapping.html" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
