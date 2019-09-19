@@ -59,8 +59,13 @@ namespace Accounts
                             connExcel.Close();
                             foreach (DataRow row in dt.Rows) {
                                 dal obj = new dal();
-                                obj.InsertRawData(row["SYMBOL"].ToString(), row["RPTCODE"].ToString(), row["ACSHORT"].ToString(), row["ACCOUNTCODE"].ToString(), int.Parse(row["YEAR"].ToString()), row["AMOUNT"].ToString());
-                                response = row["SYMBOL"].ToString() + "|" + row["YEAR"].ToString();
+                                if (!String.IsNullOrEmpty(row["SYMBOL"].ToString()) && !String.IsNullOrEmpty(row["RPTCODE"].ToString()) && !String.IsNullOrEmpty(row["ACSHORT"].ToString()) && !String.IsNullOrEmpty(row["ACCOUNTCODE"].ToString()) && string.IsNullOrEmpty(row["AMOUNT"].ToString()))
+                                {
+                                    obj.InsertRawData(row["SYMBOL"].ToString(), row["RPTCODE"].ToString(), row["ACSHORT"].ToString(), row["ACCOUNTCODE"].ToString(), int.Parse(row["YEAR"].ToString()), row["AMOUNT"].ToString());
+                                    response = row["SYMBOL"].ToString() + "|" + row["YEAR"].ToString();
+                                }
+                            
+                                
                             }
                         }
                     }
