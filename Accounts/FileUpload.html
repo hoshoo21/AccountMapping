@@ -88,6 +88,10 @@
                 success: function (data) {
                     console.log(data);
                     //tblRawData
+                    if ($.fn.dataTable.isDataTable('#tblRawData')) {
+                        audittabvar = $('#tblRawData').DataTable().clear().destroy();
+                    }
+
                     $('#tblRawData').dataTable({
                         data: data,
                         "columns": [
