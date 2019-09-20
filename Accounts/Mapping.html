@@ -203,11 +203,11 @@
                                     var coldata = '';
 
                                     if (full['GENERALCODE'] == null) {
-                                        coldata = ' <a  class="btn btn-success btn-xs holdcomment" onclick="save(\'' + full["ACCOUNTCODE"] + '\',\'' + full["YEAR"] + '\',\'' + full['id'] + 'start\')" data-th ="' + full["GIH_DOC_REF_NO"] + '" href="#" >' + 'Save Account' + '</a> <br>';
+                                        coldata = ' <a  class="btn btn-success btn-xs holdcomment" onclick="save(\'' +full["ACSHORT"] + full["ACCOUNTCODE"] + '\',\'' + full["YEAR"] + '\',\'' + full['id'] + 'start\')" data-th ="' + full["GIH_DOC_REF_NO"] + '" href="#" >' + 'Save Account' + '</a> <br>';
                                     }
 
                                     else {
-                                        coldata = ' <a  class="btn btn-success btn-xs holdcomment" onclick="update(\'' + full["ACCOUNTCODE"] + '\',\'' + full["YEAR"] + '\',\'' + full['id'] + 'start\')" data-th ="' + full["GIH_DOC_REF_NO"] + '" href="#" >' + 'Update Account' + '</a> <br>';
+                                        coldata = ' <a  class="btn btn-success btn-xs holdcomment" onclick="update(\'' + full["ACSHORT"] + full["ACCOUNTCODE"] + '\',\'' + full["YEAR"] + '\',\'' + full['id'] + 'start\')" data-th ="' + full["GIH_DOC_REF_NO"] + '" href="#" >' + 'Update Account' + '</a> <br>';
                                     }
 
                                     return coldata;

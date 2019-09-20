@@ -63,11 +63,15 @@
             <tr>
                 <th>Ticker</th>
                 <th>RPT CODE</th>
+                <th>CIK</th>
                 <th>ACS Short</th>
                 <th>Account Code</th>
                 <th>Year</th>
                 <th>Amount</th>
-                
+                <th>UNIT</th>
+                <th>ROUNDING</th>
+                <th>ACTYPE</th>
+                <th>QUARTER</th>
 
             </tr>
         </thead>
@@ -85,7 +89,7 @@
                 ajaxStart: function () { $body.addClass("loading"); },
                 ajaxStop: function () { $body.removeClass("loading"); }
             });
-            getRawData('DGKC', 2016)
+            //getRawData('DGKC', 2016)
             $('#uploadBTN').on('click', function () {
                 var input = document.getElementById('fileinput');
                 var file = input.files[0];
@@ -135,11 +139,16 @@
                         "columns": [
                             { "data": "TICKER" },
                             { "data": "RPTCODE" },
-                            { "data": "ACSHORT" },
+                             { "data": "CIK" },
+
+                           { "data": "ACSHORT" },
                             { "data": "ACCOUNTCODE" },
                             { "data": "YEAR" },
-                            { "data": "AMOUNT" }
-                            
+                            { "data": "AMOUNT" },
+                            { "data": "UNIT" },
+                            { "data": "ROUNDING" },
+                            { "data": "ACTYPE" },
+                            { "data": "QUARTER" }
                         ]
                     })
                     $('#overlay').hide();

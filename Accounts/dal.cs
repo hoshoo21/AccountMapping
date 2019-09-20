@@ -10,7 +10,8 @@ namespace Accounts
 {
     public class dal
     {
-        public void InsertRawData(string Ticker, string RPTCode, string ACSHORT, string AccountCode, int Year, string Amount) {
+        public void InsertRawData(string Ticker, string RPTCode, string ACSHORT, string AccountCode, int Year, string Amount,
+            string CIK, string Unit, string Rounding, string Actype, string Quarter) {
             string constr =  ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
 
             using (OracleConnection conn = new OracleConnection(constr))
@@ -25,6 +26,11 @@ namespace Accounts
                 cmd.Parameters.Add("@Account_Code", AccountCode);
                 cmd.Parameters.Add("@YearToInsert", Year);
                 cmd.Parameters.Add("@AmountToInsert", Amount);
+                cmd.Parameters.Add("@Cik_", CIK);
+                cmd.Parameters.Add("@Unit_", Unit);
+                cmd.Parameters.Add("@Rounding_", Rounding);
+                cmd.Parameters.Add("@Actype_", Actype);
+                cmd.Parameters.Add("@Quarter_", Quarter);
                 // execute the command
                 cmd.ExecuteNonQuery();
                 
