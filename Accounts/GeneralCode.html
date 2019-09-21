@@ -61,6 +61,14 @@
                 <input type="text" id="txtAccountcode" class="form-control mb-4" placeholder="Name">
             </div>
             <div class="col-md-3">
+                <input type="text" id="txtAChosrtCode" class="form-control mb-4" placeholder="Account Short Code">
+            </div>
+             <div class="col-md-3">
+                    <input type="text" id="txtRPTCode" class="form-control mb-4" placeholder="RPT Code">
+            </div>
+
+
+            <div class="col-md-3">
                 <button class="btn btn-info btn-block" id="inserAccountCode">Save</button>
             </div>
         
@@ -76,7 +84,8 @@
                 <thead>
                     <tr>
                         <th>General Code</th>
-
+                        <th>AC Short</th>
+                        <th>RPT Code</th>
 
                     </tr>
                 </thead>
@@ -103,8 +112,9 @@
             $('#inserAccountCode').on('click', function (evt) {
                 evt.preventDefault();
                 var ajax_data = {
-                    AccountCode: $('#txtAccountcode').val()
-
+                    AccountCode: $('#txtAccountcode').val(),
+                    ACShortCode: $("#txtAChosrtCode").val(),
+                    RPTCode: $("#txtRPTCode").val()
                 };
                 var _self = this;
                 $.ajax({
@@ -126,7 +136,7 @@
         function getGeneralCode() {
     
             $.ajax({
-                url: "api/AccountCode/GetGeneralCode",
+                url: "api/AccountCode/GetGeneralCodeFull",
                 type: 'GET',
                 dataType: 'json',
 
@@ -139,7 +149,9 @@
                     $('#tblGeneralCode').dataTable({
                         data: data,
                         "columns": [
-                            { "data": "GENERALCODE" }
+                            { "data": "GENERALCODE" },
+                            { "data": "ACSHORT" },
+                            { "data": "RPTCODE" }
                             
                         ]
                     })

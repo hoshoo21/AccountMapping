@@ -81,6 +81,27 @@ namespace Accounts
         }
 
 
+        public DataTable GetGeneralCodeFull()
+        {
+            string constr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
+            DataTable dt = new DataTable();
+            using (OracleConnection conn = new OracleConnection(constr))
+            {
+                conn.Open();
+
+                OracleCommand cmd = new OracleCommand("fin_getgeneralcodeful", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("prc", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+                OracleDataAdapter da = new OracleDataAdapter(cmd);
+                da.Fill(dt);
+
+
+            }
+            return dt;
+        }
+
+
         public DataTable GetGeneralCode()
         {
             string constr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
@@ -139,7 +160,7 @@ namespace Accounts
             }
             return dt;
         }
-        public void InsertGeneralAccountCode(string AccountCode)
+        public void InsertGeneralAccountCode(string AccountCode, string ACShortCode, string RPTCode)
         {
             string constr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
 
@@ -150,6 +171,8 @@ namespace Accounts
                 OracleCommand cmd = new OracleCommand("FIN_INSERTGENERALCODE", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("@General_Code_tmp", AccountCode);
+                cmd.Parameters.Add("@ACShortCode_", ACShortCode);
+                cmd.Parameters.Add("@RPTCode_", RPTCode);
                 // execute the command
                 cmd.ExecuteNonQuery();
 

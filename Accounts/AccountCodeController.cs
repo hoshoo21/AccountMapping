@@ -14,7 +14,7 @@ namespace Accounts
 
         public System.Web.Http.Results.JsonResult<string> InsertGeneralCode(AccountData objData) {
             dal objdal = new dal();
-            objdal.InsertGeneralAccountCode(objData.AccountCode);
+            objdal.InsertGeneralAccountCode(objData.AccountCode, objData.ACShortCode, objData.RPTCode);
 
             return Json<string>("");
         }
@@ -41,6 +41,17 @@ namespace Accounts
 
             dal objdal = new dal();
             DataTable dt = objdal.GetGeneralCode();
+
+            return Json<DataTable>(dt);
+
+
+        }
+
+        public System.Web.Http.Results.JsonResult<DataTable> GetGeneralCodeFull()
+        {
+
+            dal objdal = new dal();
+            DataTable dt = objdal.GetGeneralCodeFull();
 
             return Json<DataTable>(dt);
 
